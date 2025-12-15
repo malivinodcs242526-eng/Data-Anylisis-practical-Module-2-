@@ -1,0 +1,51 @@
+library(dplyr)
+
+df <- read.csv("tokopedia_product_reviews_2025.csv")
+
+rating_counts <- table(df$rating)
+print("Frequency Table: Product Ratings")
+print(rating_counts)
+
+# Frequency distribution of sentiment (Positive / Neutral / Negative)
+sentiment_counts <- table(df$sentiment)
+print("Frequency Table: Review Sentiment")
+print(sentiment_counts)
+
+# Frequency distribution of verified purchase status
+verified_counts <- table(df$verified_purchase)
+print("Frequency Table: Verified Purchase Status")
+print(verified_counts)
+
+rating_df <- df %>% count(rating)
+print("Rating Frequency (Data Frame Format)")
+print(rating_df)
+
+# Sentiment frequency using dplyr
+sentiment_df <- df %>% count(sentiment)
+print("Sentiment Frequency (Data Frame Format)")
+print(sentiment_df)
+
+# Verified purchase frequency using dplyr
+verified_df <- df %>% count(verified_purchase)
+print("Verified Purchase Frequency (Data Frame Format)")
+print(verified_df)
+
+# Proportion of product ratings
+rating_prop <- prop.table(rating_counts)
+print("Proportion Table: Product Ratings")
+print(rating_prop)
+
+# Proportion of sentiment distribution
+sentiment_prop <- prop.table(sentiment_counts)
+print("Proportion Table: Review Sentiment")
+print(sentiment_prop)
+
+# Proportion of verified purchase reviews
+verified_prop <- prop.table(verified_counts)
+print("Proportion Table: Verified Purchase")
+print(verified_prop)
+
+
+
+
+
