@@ -1,0 +1,121 @@
+library("dplyr")
+library("psych")
+
+df <- read_csv("elevator_traffic_dataset (1).csv")
+print("First 6 rows of the dataset")
+head(df)
+
+print("Last 6 rows of the dataset")
+tail(df)
+
+print("Structure of dataset:")
+str(df)
+
+print("Column names:")
+colnames(df)
+
+print("Dataset dimensions (Rows, Columns):")
+dim(df)
+
+df$timestamp <- as.POSIXct(df$timestamp)
+
+df$direction  <- as.factor(df$direction)
+df$peak_hour  <- as.factor(df$peak_hour)
+
+print("Missing values per column:")
+colSums(is.na(df))
+
+df <- na.omit(df)
+
+print("Dataset dimensions after cleaning:")
+dim(df)
+
+df$Load_Category <- ifelse(df$load_percent > 75,
+                           "High Load",
+                           "Normal Load")
+
+df$Load_Category <- as.factor(df$Load_Category)
+
+print("Load Category distribution:")
+table(df$Load_Category)
+
+
+print("------------------------------------------------------------")
+print("DESCRIPTIVE STATISTICS USING summary()")
+print("------------------------------------------------------------")
+
+summary(df)
+numeric_data <- df %>% select(
+  floor_requested,
+  wait_time_seconds,
+  people_count,
+  load_percent
+)
+
+summary(numeric_data)
+
+print("------------------------------------------------------------")
+print("DESCRIPTIVE STATISTICS USING describe()")
+print("------------------------------------------------------------")
+
+describe(numeric_data)
+
+print("------------------------------------------------------------")
+print("GROUP-WISE STATISTICS BY LOAD CATEGORY")
+print("------------------------------------------------------------")
+
+group_means <- df %>%
+  group_by(Load_Category) %>%
+  summarise(
+    Avg_Wait_Time   = mean(wait_time_seconds),
+    Avg_People      = mean(people_count),
+    Avg_Load        = mean(load_percent),
+    Avg_Floor       = mean(floor_requested)
+  )
+
+print(group_means)
+
+print("------------------------------------------------------------")
+print("ADDITIONAL STATISTICAL MEASURES")
+print("------------------------------------------------------------")
+
+# Variance
+variance_values <- sapply(numeric_data, var)
+
+# Standard deviation
+sd_values <- sapply(numeric_data, sd)
+
+print("Variance of numeric variables:")
+print(variance_values)
+
+print("Standard deviation of numeric variables:")
+print(sd_values)
+
+print("------------------------------------------------------------")
+print("FREQUENCY DISTRIBUTION")
+print("------------------------------------------------------------")
+
+direction_freq <- table(df$direction)
+print(direction_freq)
+
+peak_hour_freq <- table(df$peak_hour)
+print(peak_hour_freq)
+
+peak_hour_prop <- prop.table(peak_hour_freq)
+print(peak_hour_prop)
+
+write.csv(
+  describe(numeric_data),
+  "elevator_descriptive_statistics.csv",
+  row.names = TRUE
+)
+
+# Save group-wise statistics
+write.csv(
+  group_means,
+  "elevator_groupwise_statistics.csv",
+  row.names = FALSE
+)
+
+print("Elevator traffic data analysis completed successfully.")
+
