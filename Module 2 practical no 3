@@ -1,0 +1,41 @@
+library("dplyr")
+
+df <- read.csv("ai_automation_risk_dataset.csv", stringsAsFactors = TRUE)
+print("Column names in dataset:")
+print(colnames(df))
+
+df <- df %>%
+  filter(
+    !is.na(job_role),
+    !is.na(avg_salary_usd),
+    !is.na(experience_required_years),
+    !is.na(education_level)
+  )
+
+df$job_role <- as.factor(df$job_role)
+df$education_level <- as.factor(df$education_level)
+
+df$avg_salary_usd <- as.numeric(df$avg_salary_usd)
+df$experience_required_years <- as.numeric(df$experience_required_years)
+
+df$Experience_Group <- ifelse(
+  df$experience_required_years < 3, "Low Experience",
+  ifelse(df$experience_required_years <= 7, "Medium Experience", "High Experience")
+)
+df$Experience_Group <- as.factor(df$Experience_Group)
+
+print("Experience Group Distribution:")
+table(df$Experience_Group)
+
+print("Cross-Tabulation: Job Role vs Education Level")
+job_education_tab <- table(df$job_role, df$education_level)
+
+print("Rows = Job Role | Columns = Education Level")
+print(job_education_tab)
+
+print("Cross-Tabulation: Job Role vs Experience Group")
+job_experience_tab <- table(df$job_role, df$Experience_Group)
+
+print("Rows = Job Role | Columns = Experience Group")
+print(job_experience_tab)
+
