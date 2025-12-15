@@ -1,0 +1,52 @@
+library("dplyr")
+
+df <- read.csv("house_price_regression_dataset.csv")
+
+print("Column names in dataset:")
+print(colnames(df))
+
+numeric_cols <- sapply(df, is.numeric)
+
+print("Numeric columns found:")
+print(names(df)[numeric_cols])
+
+# Select first numeric column
+main_var <- names(df)[numeric_cols][1]
+
+print(paste("Selected variable for paired test:", main_var))
+
+df <- df[!is.na(df[[main_var]]), ]
+
+set.seed(123)
+
+df$paired_value <- df[[main_var]] + runif(
+  nrow(df),
+  min = -5000,
+  max = 15000
+)
+
+print("Summary of original values:")
+summary(df[[main_var]])
+
+print("Summary of paired values:")
+summary(df$paired_value)
+
+print("Paired t-test Result")
+
+paired_test <- t.test(
+  df[[main_var]],
+  df$paired_value,
+  paired = TRUE
+)
+
+print(paired_test)
+
+if (paired_test$p.value < 0.05) {
+  print("Decision: Reject the null hypothesis.")
+  print("Conclusion: There is a significant difference between paired observations.")
+} else {
+  print("Decision: Fail to reject the null hypothesis.")
+  print("Conclusion: No significant difference between paired observations.")
+}
+
+print("Paired t-test executed successfully.")
