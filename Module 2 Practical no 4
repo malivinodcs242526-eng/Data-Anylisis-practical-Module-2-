@@ -1,0 +1,40 @@
+library("dplyr")
+
+df <- read.csv("spotify-2023.csv")
+print("Column names in dataset:")
+print(colnames(df))
+
+df <- df %>%
+  select(
+    track_name,
+    artist.s._name,
+    artist_count,
+    released_month
+  )
+
+df <- df %>%
+  filter(!is.na(artist_count))
+
+df$artist_count <- as.numeric(df$artist_count)
+df$released_month <- as.numeric(df$released_month)
+
+print("Summary of artist_count:")
+summary(df$artist_count)
+
+print("One-Sample t-test on Artist Count")
+
+t_test_one <- t.test(
+  df$artist_count,
+  mu = 1
+)
+
+print(t_test_one)
+
+if (t_test_one$p.value < 0.05) {
+  print("Result: Reject the null hypothesis.")
+  print("Conclusion: The average number of artists per track is significantly different from 1.")
+} else {
+  print("Result: Fail to reject the null hypothesis.")
+  print("Conclusion: The average number of artists per track is not significantly different from 1.")
+}
+
