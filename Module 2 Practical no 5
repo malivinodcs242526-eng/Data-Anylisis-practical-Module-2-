@@ -1,0 +1,53 @@
+library(dplyr)
+
+# check.names = FALSE is IMPORTANT to keep original column names
+df <- read.csv("FOOD-DATA-GROUP1.csv", check.names = FALSE)
+
+print("Column names in dataset:")
+print(colnames(df))
+
+# Convert numeric columns explicitly
+df$`Saturated Fats` <- as.numeric(df$`Saturated Fats`)
+df$Fat <- as.numeric(df$Fat)
+
+# Remove rows with missing values
+df <- df[!is.na(df$`Saturated Fats`) & !is.na(df$Fat), ]
+
+print("Summary of Saturated Fats:")
+summary(df$`Saturated Fats`)
+
+print("Summary of Fat:")
+summary(df$Fat)
+
+# Create Fat Group using median split
+fat_median <- median(df$Fat)
+
+df$Fat_Group <- ifelse(
+  df$Fat <= fat_median,
+  "Low Fat",
+  "High Fat"
+)
+
+df$Fat_Group <- as.factor(df$Fat_Group)
+
+print("Fat Group Distribution:")
+print(table(df$Fat_Group))
+
+print("Independent Two-Sample t-test: Saturated Fats vs Fat Group")
+
+t_test_result <- t.test(
+  df$`Saturated Fats` ~ df$Fat_Group
+)
+
+print(t_test_result)
+
+if (t_test_result$p.value < 0.05) {
+  print("Decision: Reject the null hypothesis.")
+  print("Conclusion: Saturated fat content differs significantly between Low Fat and High Fat foods.")
+} else {
+  print("Decision: Fail to reject the null hypothesis.")
+  print("Conclusion: No significant difference in saturated fat content between Low Fat and High Fat foods.")
+}
+
+print("Independent two-sample t-test completed successfully.")
+
