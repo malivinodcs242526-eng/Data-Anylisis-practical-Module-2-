@@ -1,0 +1,47 @@
+rm(list = ls())
+
+library("stats")
+
+stress_data <- read_csv("StressLevelDataset.csv")
+
+head(stress_data)
+
+# View last few rows
+tail(stress_data)
+
+# Check structure of dataset
+str(stress_data)
+
+# Summary statistics
+summary(stress_data)
+
+stress_data$stress_level <- as.factor(stress_data$stress_level)
+
+# Confirm conversion
+str(stress_data$stress_level)
+
+
+anova_model <- aov(academic_performance ~ stress_level, data = stress_data)
+residuals_anova <- residuals(anova_model)
+
+shapiro.test(residuals_anova)
+
+
+bartlett.test(academic_performance ~ stress_level, data = stress_data)
+
+
+anova_result <- aov(academic_performance ~ stress_level, data = stress_data)
+
+# Display ANOVA table
+summary(anova_result)
+
+tukey_result <- TukeyHSD(anova_result)
+
+# Display post-hoc results
+tukey_result
+
+
+aggregate(academic_performance ~ stress_level,
+          data = stress_data,
+          FUN = mean)
+
