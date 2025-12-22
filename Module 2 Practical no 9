@@ -1,0 +1,31 @@
+rm(list = ls())
+
+
+library("stats")
+
+covid_data <- read.csv("COVID-19_CBC_Data.csv",
+                       stringsAsFactors = FALSE)
+
+colnames(covid_data)
+str(covid_data)
+head(covid_data)
+
+covid_data$Gender  <- as.factor(covid_data$Gender)
+covid_data$Outcome <- as.factor(covid_data$Outcome)
+
+contingency_table <- table(covid_data$Gender,
+                           covid_data$Outcome)
+
+# Display contingency table
+contingency_table
+
+
+chi_square_test <- chisq.test(contingency_table)
+
+# Display test results
+chi_square_test
+
+
+chi_square_test$expected
+
+
