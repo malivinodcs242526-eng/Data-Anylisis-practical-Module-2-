@@ -1,0 +1,46 @@
+rm(list = ls())
+
+library("stats")
+
+treatments_data <- read.csv("treatments.csv",
+                            stringsAsFactors = FALSE)
+
+colnames(treatments_data)
+str(treatments_data)
+summary(treatments_data)
+
+# Convert treatment_type to factor
+treatments_data$treatment_type <- as.factor(treatments_data$treatment_type)
+
+# Ensure cost is numeric
+treatments_data$cost <- as.numeric(treatments_data$cost)
+
+# Remove missing values
+treatments_data <- na.omit(treatments_data)
+
+# Verify structure
+str(treatments_data)
+
+
+anova_model <- aov(cost ~ treatment_type,
+                   data = treatments_data)
+
+# Display ANOVA table
+summary(anova_model)
+
+# Normality of residuals
+shapiro.test(residuals(anova_model))
+
+# Homogeneity of variance
+bartlett.test(cost ~ treatment_type,
+              data = treatments_data)
+
+
+TukeyHSD(anova_model)
+
+
+aggregate(cost ~ treatment_type,
+          data = treatments_data,
+          mean)
+
+
