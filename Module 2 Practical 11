@@ -1,0 +1,31 @@
+# Load ggplot2 library
+library(ggplot2)
+
+# Load the dataset
+github_data <- read.csv("github-top-developers-by-year.csv")
+
+# View first few rows
+head(github_data)
+
+# Identify the first numeric column automatically
+numeric_column <- names(github_data)[sapply(github_data, is.numeric)][1]
+
+
+# Histogram
+ggplot(github_data, aes_string(x = numeric_column)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "black") +
+  labs(
+    title = paste("Histogram of", numeric_column),
+    x = numeric_column,
+    y = "Frequency"
+  ) +
+  theme_minimal()
+
+# Box Plot
+ggplot(github_data, aes_string(y = numeric_column)) +
+  geom_boxplot(fill = "orange") +
+  labs(
+    title = paste("Box Plot of", numeric_column),
+    y = numeric_column
+  ) +
+  theme_minimal()
