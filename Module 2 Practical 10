@@ -1,0 +1,58 @@
+# Load ggplot2 library
+library(ggplot2)
+
+# Load Toyota dataset
+toyota_data <- read.csv("Toyota_Data.csv")
+
+# Convert Date column to Date format
+toyota_data$Date <- as.Date(toyota_data$Date)
+
+# Take top 20 rows
+toyota_top20 <- head(toyota_data, 20)
+
+# View top 20 data
+head(toyota_top20)
+
+
+# Scatter Plot: Volume vs Close Price
+
+ggplot(toyota_top20, aes(x = Volume, y = Close)) +
+  geom_point() +
+  labs(
+    title = "Scatter Plot of Volume vs Close Price (Top 20 Records)",
+    x = "Trading Volume",
+    y = "Closing Price"
+  ) +
+  theme_minimal()
+
+
+# Pie Chart: Distribution of Trading Volume
+
+volume_category <- cut(
+  toyota_top20$Volume,
+  breaks = 3,
+  labels = c("Low Volume", "Medium Volume", "High Volume")
+)
+
+volume_count <- table(volume_category)
+volume_df <- as.data.frame(volume_count)
+
+ggplot(volume_df, aes(x = "", y = Freq, fill = volume_category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(
+    title = "Distribution of Trading Volume (Top 20 Records)",
+    fill = "Volume Level"
+  ) +
+  theme_void()
+
+# High–Low Chart: Stock Price Range
+ggplot(toyota_top20, aes(x = factor(seq_along(Date)))) +
+  geom_linerange(aes(ymin = Low, ymax = High)) +
+  labs(
+    title = "High-Low Chart of Toyota Stock Prices (Top 20 Records)",
+    x = "Trading Days",
+    y = "Price Range"
+  ) +
+  theme_minimal()
+
