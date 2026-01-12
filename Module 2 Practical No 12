@@ -1,0 +1,14 @@
+# Load the dataset
+laptop_data <- read.csv("laptop_prices.csv")
+
+# View first few rows
+head(laptop_data)
+
+# Select only numeric columns
+numeric_data <- laptop_data[sapply(laptop_data, is.numeric)]
+
+# Generate correlation matrix
+cor_matrix <- cor(numeric_data, use = "complete.obs")
+
+# Display correlation matrix
+print(cor_matrix)
