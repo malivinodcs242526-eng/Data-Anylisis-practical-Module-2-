@@ -1,0 +1,64 @@
+# Read the dataset
+salary_data <- read.csv("ds_salaries.csv")
+
+# Take top 5 rows ONLY
+salary_data <- head(salary_data, 5)
+
+# View data
+head(salary_data)
+str(salary_data)
+
+# Create binary target variable
+salary_data$Approved <- ifelse(
+  salary_data$salary_in_usd > median(salary_data$salary_in_usd),
+  1,
+  0
+)
+
+salary_data$Approved <- as.factor(salary_data$Approved)
+
+# Logistic Regression Model
+log_model <- glm(
+  Approved ~ remote_ratio + experience_level + employment_type,
+  data = salary_data,
+  family = binomial
+)
+
+# Model summary
+summary(log_model)
+
+# Predicted probabilities
+probabilities <- predict(log_model, type = "response")
+
+# Predicted class
+predicted_class <- ifelse(probabilities > 0.5, 1, 0)
+
+# Confusion matrix
+table(
+  Actual = salary_data$Approved,
+  Predicted = predicted_class
+)
+
+# Graph 1: Predicted probabilities
+plot(
+  probabilities,
+  main = "Predicted Probability of High Salary (Top 5 Records)",
+  ylab = "Probability",
+  xlab = "Observations"
+)
+abline(h = 0.5, col = "red")
+
+# ROC Curve
+library(pROC)
+roc_curve <- roc(as.numeric(salary_data$Approved), probabilities)
+plot(roc_curve, main = "ROC Curve (Top 5 Records)")
+
+# Graph 2: Actual vs Predicted probabilities
+plot(
+  as.numeric(salary_data$Approved),
+  probabilities,
+  xlab = "Actual Class (0/1)",
+  ylab = "Predicted Probability",
+  main = "Actual vs Predicted Probabilities (Top 5 Records)"
+)
+abline(h = 0.5, col = "red")
