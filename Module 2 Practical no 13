@@ -1,0 +1,32 @@
+# Load dataset
+data <- read.csv("data.csv")
+
+# Take top 5 rows only
+data_top5 <- head(data, 5)
+
+# View data
+print(data_top5)
+
+# Select numeric columns
+numeric_data <- data_top5[sapply(data_top5, is.numeric)]
+
+# Assign variables
+Y <- numeric_data[[1]]
+X <- numeric_data[[2]]
+
+# Linear regression model
+model <- lm(Y ~ X)
+
+# Model summary
+summary(model)
+
+# Fix plot margin error
+par(mar = c(4, 4, 2, 1))
+
+# Plot with regression line
+plot(X, Y,
+     main = "Linear Regression (Top 5 Rows)",
+     xlab = "Independent Variable",
+     ylab = "Dependent Variable")
+
+abline(model, col = "blue")
