@@ -1,0 +1,22 @@
+# Read dataset
+data <- read.csv("hardware_asset_registry_50000.csv")
+
+# Export to CSV
+write.csv(data,
+          file = "hardware_asset_registry_output.csv",
+          row.names = FALSE)
+
+
+# Export to Excel
+library(writexl)
+
+write_xlsx(data,
+           path = "hardware_asset_registry_output.xlsx")
+
+
+# Export to PDF
+library(gridExtra)
+
+pdf("hardware_asset_registry_output.pdf")
+grid.table(head(data))   # shows first few rows
+dev.off()
